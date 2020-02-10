@@ -240,12 +240,9 @@ router.post('/todolist',
             });
             return console.log(err.message);
         }
-
-        // Get the last insert id
-        console.log(`A new item has been added with rowid ${this.lastID}`);
-        //Return the 200 (OK) status, and a JSON containing todolist
+        //Return the 201 (Created) status, and a JSON containing todolist
         res.status(200).json({
-            message: 'Item added',
+            message: `Item added at row: ${this.changes}`,
         });
     });
 });
@@ -257,11 +254,11 @@ Lastly, we want to be able to remove items from our list. We'll copy the same fo
 router.delete('/todolist/:itemNumber',
   //Function to handle request
   function (req, res) {
-    //Get request the item id from the path parameters  
+    //Get request the item to remove from the list  
     var itemToDelete = req.params.itemNumber;
-    //Delete query
+    //Insertion query
     const query = 'DELETE FROM todolist WHERE rowid=?';
-    //Delete item from database
+    //Insert new item into database
     db.run(query, [itemToDelete], function(err) {
         if (err) {
             res.status(500).json({
@@ -269,7 +266,7 @@ router.delete('/todolist/:itemNumber',
             });
             return console.log(err.message);
         }
-        //Return the 200 (OK) status, and the row of the deleted item
+        //Return the 200 (OK) status, and a JSON containing todolist
         res.status(200).json({
             message: `Item with item number ${this.changes} deleted`,
         });
