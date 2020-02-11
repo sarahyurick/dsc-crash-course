@@ -45,11 +45,11 @@ The REST API is the API that other internet applications use to interact with yo
 
 ## Building a Back End
 
-We're going to build a backend REST API using Node.js. Our application will receive input from the client through our API, handle it, and then respond to the client by updating the model.
+We're going to build a backend REST API using **Node.js**. Our application will receive input from the client through our API, handle it, and then respond to the client.
 
 ### Setting up the Project
 Open up a terminal and navigate to the directory that you want to build your project in.
-Type:</br></br>
+Type:</br>
 ```
 > mkdir dsc-crash-course
 > cd dsc-crash-course
@@ -64,7 +64,9 @@ In your terminal type:
 > npm install express --save
 ```
 
-Lastly, we want to install our database. For ease of use we'll be using `sqlite`, a lightweight database contained within our application so that we don't need to configure a separate SQL database. More commonly you'd create a `PostgreSQL, MSSQL, MySQL, etc` database. The way we access sqlite will be similar to that of these other common databases, and if you want to transition your application to using one of those databases it should be fairly simple.
+Lastly, we want to install our database. For ease of use we'll be using `sqlite`, a lightweight database contained in a C program. Sqlite allows us to use a SQL database without having to use a separate application. Typically you would download, install, and configure a SQL database application like PostgreSQL, MySQL, MSSQL, Oracle SQL, etc. One of these applications would give you a fully-featured SQL database with a good GUI, built-in security, lots of memory, better scalability, and more flexibility. However, our application is small and simple. We are prioritizing simplicity over robustness, so sqlite is appropriate here.
+
+If you decide that you'd rather use a full-featured database like one of those listed above, the transition should be fairly simple. The way that we use sqlite in our application is similar to other databases. More on this later.
 
 Type:
 ```
@@ -102,15 +104,22 @@ app.listen(port, function () {
      console.log("Running dsc-crash-course on port " + port);
 });
 ```
+Here we import Express, initialize the app, and tell our app to listen to that port.
 
-Save and run ```node index``` in your terminal. You should see:
+The most important part here, though, is:
+```js
+app.get('/', (req, res) => res.send('Hello World with Express'));
+```
+This line defines our first **REST API endpoint**, the door from the internet to our application. What it says is that we want to define a `GET` endpoint, and in response we want to send the phrase "Hello World with Express".
+
+Save, and run ```node index``` in your terminal. You should see:
 `"Running dsc-crash-course on port 8080"`
 
 Now, if you open a browser and go to: `http://localhost:8080`, you should see `"Hello World with Express"`
 
 ### Restructuring the App
 
-Now, although you could write your entire API in this one file, we picked the MVC architecture for the benefit of logical code separation. And if we're going to define a bunch of logic in how our API handles inputs, we probably shouldn't do it in the same file that configures our app for us.
+Now, although you could write your entire API in this one file, we picked the MVC architecture for the benefit of logical code separation. And if we're going to define a bunch of logic for how our API handles inputs, we probably shouldn't do it in the same file that configures our app for us. We want our code to be clear and easy to refactor.
 
 So go ahead and create a `controller.js` file and open it. Here, we're going to redefine our `get endpoint` that we defined in the index.js file.
 
@@ -150,6 +159,7 @@ with:
 //Route "/" endpoint to the controller
 app.use('/', controller);
 ```
+Here we're just telling our index.js file to route all requests at the default "/" endpoint to the endpoints that we define in the controller. </br></br>
 Your index.js file should now look like:
 ```js
 // Import express
@@ -172,13 +182,13 @@ app.listen(port, function () {
 });
 ```
 
-Now, if we run `node index` again and return to our browser at `localhost:8080`, we should see the json that we defined in our controller: `{"status":"API is Working","message":"Welcome to the dsc-crash-course page"}`
+Now, if we run `node index` in the terminal again and return to our browser at `localhost:8080`, we should see the json that we defined in our controller: `{"status":"API is Working","message":"Welcome to the dsc-crash-course page"}`
 
 
 ### Using the Database
 Now, we want the ability to store our data, and for this we need to use our `sqlite` database. Typically, the database access would be defined in another file, but for simplicity, we're going to handle the API requests and access the database in our controller.
 
-Note: Although the queries are in SQLite syntax and are similar to most SQL database queries, the methods for creating, connecting, and querying those databases will vary depending on which one you choose. `db.run`, `db.all`, etc are not universal. You'll need to reference the documentation for your ipmlementation.
+Note: Although the queries are in SQLite syntax and are similar to most SQL database queries, the methods for creating, connecting, and querying those databases will vary depending on which one you choose. `db.run`, `db.all`, etc are not universal. If you decide to use a different database you'll need to reference the documentation for that tool.
 
 At the top of your `controller.js` file (after the router import) add the following code to create and connect to the database:
 ```js
