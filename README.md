@@ -186,9 +186,7 @@ Now, if we run `node index` in the terminal again and return to our browser at `
 
 
 ### Using the Database
-Now, we want the ability to store our data, and for this we need to use our `sqlite` database. Typically, the database access would be defined in another file, but for simplicity, we're going to handle the API requests and access the database in our controller.
-
-Note: Although the queries are in SQLite syntax and are similar to most SQL database queries, the methods for creating, connecting, and querying those databases will vary depending on which one you choose. `db.run`, `db.all`, etc are not universal. If you decide to use a different database you'll need to reference the documentation for that tool.
+Now, we want the ability to store our data, and for this we need to use our `sqlite` database. Typically, we would make another file to define the database access functions (often called the service layer), but for simplicity, we're going to handle both the API requests and access the database in our controller.
 
 At the top of your `controller.js` file (after the router import) add the following code to create and connect to the database:
 ```js
@@ -206,9 +204,11 @@ let db = new sqlite3.Database(':memory:', function(err) {
     db.run(initTablesQuery);
 });
 ```
+**Note:** Although the queries are in SQLite syntax and are similar to most SQL database queries, the methods for creating, connecting, and querying those databases will vary depending on which one you choose. `db.run`, `db.all`, etc are not universal. If you decide to use a different database you'll need to reference the documentation for that tool.
 
 ### Creating our Endpoints
-Now, we're going to define a new endpoint: `GET: /todolist` which will retrieve all the items in our todolist:
+Now, we're going to define a new endpoint: `GET: /todolist` which will retrieve all the items in our todolist. On our router, we can define any of the HTTP methods:  `GET`, `POST`, `PUT`, `DELETE`. The Express router has a predefined function for each of these methods. For our get method, we pass the api path that we want to associate with this endpoint, `/todolist`, and the callback function defining what we want to do when we get a request at this endpoint. To the `controller.js` file we'll add:
+
 ```js
 //Define GET todolist endpoint
 router.get('/todolist',
@@ -231,7 +231,7 @@ router.get('/todolist',
 });
 ```
 
-If we were to run our app and try to access this endpoint at `localhost:8080/todolist`, we'd receive an empty json: `{}`. We need a way to add items to our list. Add the `POST /todolist` endpoint:
+If we were to run our app and try to access this endpoint at `localhost:8080/todolist`, we'd receive an empty list: `[]`. We need a way to add items to our list. We'll follow the format of the get method, but in our callback function we will run a query to insert the new item to our datatbase. Add the `POST /todolist` endpoint:
 
 ```js
 //Define POST /todolist endpoint
@@ -287,7 +287,7 @@ router.delete('/todolist/:itemNumber',
 ### Testing the Endpoints
 Now, you are able to go into your browser at `localhost:8080/todolist` and get back an empty list of items. In order to add an item, we need to make a **POST** request, with a body containing a json defining the item we want to add.
 
-For this, we will use Postman, which you can download here: https://www.postman.com/downloads/. Once it's installed and opened, make a new request, and enter `http://localhost:8080/todolist`. Be sure to run our back end server, and then hit **Send** in Postman. It should look like this:</br></br>
+For this, we will use Postman, which you can download here: https://www.postman.com/downloads/. Postman is a useful tool for sending API requests and testing your backend. Be sure to start up the back end server from the terminal before sending a request. Once Postman is installed and opened, make a new request, and enter `http://localhost:8080/todolist`. Then hit **Send**. It should look like this:</br></br>
 ![](images/postmanGET.PNG)
 
 Now, create another request, this time changing the method to **POST** and use the same URL to our endpoint. Click on Body, select raw, then from the dropdown menu on the right select JSON. Here enter:
@@ -301,8 +301,8 @@ Click send. It should look like this:</br></br>
 
 If you try the GET function again, it should return your "Buy groceries" item.  
 
-Lastly, let's test the delete function. Make a new request, change the method to **DELETE**, use the same URL as the other two but add `/1` so you have `http://localhost:8080/todolist/1`.
+Lastly, let's test the delete function. Make a new request, change the method to **DELETE**, and use the same URL as the other two but add `/1` so you have `http://localhost:8080/todolist/1`.
 
-Hit send. Then, go back to the get method and send again. It should return an empty array.
+Hit send. Then, go back to the `GET` request and send again. It should return an empty array.
 
-Great! Now we can add items, retrieve, and delete them from our database all via the REST API. There's one more HTTP method we should implement, PUT, which we would use for updating an item, given its ID. But we'll leave that up to you.
+Great! Now we can add items, retrieve, and delete them from our database all via the REST API. There's one more HTTP method we should implement, `PUT`, which would be used for updating an item, given its ID. But we'll leave that up to you. You could also try making an endpoint for adding items in bulk, or retriving an item by its id.
