@@ -1,4 +1,4 @@
-# frontend
+# Tasks
 
 ## Project setup
 ```

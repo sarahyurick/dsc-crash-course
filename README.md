@@ -283,7 +283,7 @@ app.use(express.json());
 //Parse URL-encoded bodies
 app.use(express.urlencoded({extended : true}));
 // Setup server port
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
 // Send message for default URL
 app.get('/', (req, res) => res.send('Hello World with Express'));
 // Launch app to listen to specified port
@@ -303,9 +303,9 @@ app.get('/', (req, res) => res.send('Hello World with Express'));
 This line defines our first **REST API endpoint**, the door from the internet to our application. What it says is that we want to define a `GET` endpoint, and in response we want to send the phrase "Hello World with Express".
 
 Save, and run ```node index``` in your terminal. You should see:
-`"Running dsc-crash-course on port 8080"`
+`"Running dsc-crash-course on port 3000"`
 
-Now, if you open a browser and go to: `http://localhost:8080`, you should see `"Hello World with Express"`
+Now, if you open a browser and go to: `http://localhost:3000`, you should see `"Hello World with Express"`
 
 ### Restructuring the App
 
@@ -316,18 +316,20 @@ So go ahead and create a `controller.js` file and open it. Here, we're going to 
 Add to your controller:
 ```js
 // Initialize express router
-const router = require('express').Router();
+const router = require('express');
 
 //Define default API response
-router.get('/',
-  //Define function to handle request
-  function (req, res) {
-      //Return the 200 (OK) status, and a JSON object
-      res.status(200).json({
-          status: 'API is Working',
-          message: 'Welcome to the dsc-crash-course page',
-      });
-});
+router.get(
+    '/',
+    //Define function to handle request
+    (req, res) => {
+        //Return the 200 (OK) status, and a JSON object
+        res.status(200).json({
+            status: 'API is Working',
+            message: 'Welcome to the dsc-crash-course page',
+        });
+    },
+);
 
 //Export the router methods
 module.exports = router;
@@ -369,7 +371,7 @@ app.use(express.json());
 //Parse URL-encoded bodies
 app.use(express.urlencoded());
 // Setup server port
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
 //Route "/" endpoint to the controller
 app.use('/', controller);
 // Launch app to listen to specified port
@@ -378,7 +380,7 @@ app.listen(port, function () {
 });
 ```
 
-Now, if we run `node index` in the terminal again and return to our browser at `localhost:8080`, we should see the json that we defined in our controller: `{"status":"API is Working","message":"Welcome to the dsc-crash-course page"}`
+Now, if we run `node index` in the terminal again and return to our browser at `localhost:3000`, we should see the json that we defined in our controller: `{"status":"API is Working","message":"Welcome to the dsc-crash-course page"}`
 
 
 ### Using the Database
@@ -431,7 +433,7 @@ router.get('/todolist',
 });
 ```
 
-If we were to run our app and try to access this endpoint at `localhost:8080/todolist`, we'd receive an empty list: `[]`. We need a way to add items to our list. We'll follow the format of the get method, but in our callback function we will run a query to insert the new item to our datatbase. Add the `POST /todolist` endpoint:
+If we were to run our app and try to access this endpoint at `localhost:3000/todolist`, we'd receive an empty list: `[]`. We need a way to add items to our list. We'll follow the format of the get method, but in our callback function we will run a query to insert the new item to our datatbase. Add the `POST /todolist` endpoint:
 
 ```js
 //Define POST /todolist endpoint
@@ -463,34 +465,36 @@ Lastly, we want to be able to remove items from our list. We'll copy the same fo
 
 ```js
 //Define DELETE /todolist endpoint the {itemNumber} parameter
-router.delete('/todolist/:itemNumber',
-  //Function to handle request
-  function (req, res) {
-    //Get request the item to remove from the list
-    var taskId = req.body.taskId;
-    //Insertion query
-    const query = 'DELETE FROM todolist WHERE id=?';
-    //Insert new item into database
-    db.run(query, [ taskId ], function(err) {
-        if (err) {
-            res.status(500).json({
-                error: err,
+router.delete(
+    '/todolist/:itemId',
+    //Function to handle request
+    (req, res) => {
+        //Get request the item id from the path parameters
+        let itemId = req.params.itemId;
+        //Delete query
+        const query = 'DELETE FROM todolist WHERE id=?';
+        //Delete item from database
+        db.run(query, [ itemId ], function(err) {
+            if (err) {
+                res.status(500).json({
+                    error: err,
+                });
+                return console.log(err.message);
+            }
+            //Return the 200 (OK) status, and the row of the deleted item
+            res.status(200).json({
+                message: `Item with id ${this.changes} deleted`,
             });
-            return console.log(err.message);
-        }
-        //Return the 200 (OK) status, and a JSON containing todolist
-        res.status(200).json({
-            message: 'Item deleted',
         });
-    });
-});
+    },
+);
 ```
 
 ### Testing the Endpoints
 
-Now, you are able to go into your browser at `localhost:8080/todolist` and get back an empty list of items. In order to add an item, we need to make a **POST** request, with a body containing a json defining the item we want to add.
+Now, you are able to go into your browser at `localhost:3000/todolist` and get back an empty list of items. In order to add an item, we need to make a **POST** request, with a body containing a json defining the item we want to add.
 
-For this, we will use Postman, which you can download here: https://www.postman.com/downloads/. Postman is a useful tool for sending API requests and testing your backend. Be sure to start up the back end server from the terminal before sending a request. Once Postman is installed and opened, make a new request, and enter `http://localhost:8080/todolist`. Then hit **Send**. It should look like this:</br></br>
+For this, we will use Postman, which you can download here: https://www.postman.com/downloads/. Postman is a useful tool for sending API requests and testing your backend. Be sure to start up the back end server from the terminal before sending a request. Once Postman is installed and opened, make a new request, and enter `http://localhost:3000/todolist`. Then hit **Send**. It should look like this:</br></br>
 ![](images/postmanGET.PNG)
 
 Now, create another request, this time changing the method to **POST** and use the same URL to our endpoint. Click on Body, select raw, then from the dropdown menu on the right select JSON. Here enter:
@@ -506,7 +510,7 @@ Click send. It should look like this:</br></br>
 
 If you try the GET function again, it should return your "Buy groceries" item.
 
-Lastly, let's test the delete function. Make a new request, change the method to **DELETE**, and use the same URL as the other two but add `/1` so you have `http://localhost:8080/todolist/1`.
+Lastly, let's test the delete function. Make a new request, change the method to **DELETE**, and use the same URL as the other two but add `/1` so you have `http://localhost:3000/todolist/1`.
 
 Hit send. Then, go back to the `GET` request and send again. It should return an empty array.
 
