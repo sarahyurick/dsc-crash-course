@@ -1,8 +1,8 @@
 <template>
-  <li>
+  <md-list-item>
     {{ todo.item }}
-    <button v-on:click="$emit('remove', todo.id)">X</button>
-  </li>
+    <md-button class="md-accent md-raised" v-on:click="$emit('remove', todo.id)">Remove</md-button>
+  </md-list-item>
 </template>
 
 <script>

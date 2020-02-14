@@ -1,9 +1,12 @@
 <template>
   <div>
-    <input v-model="newTodoText" placeholder="New Task" v-on:keydown.enter="addTodo" />
-    <ol v-if="todos.length">
+    <md-field>
+      <label>New Task</label>
+      <md-input v-model="newTodoText" v-on:keydown.enter="addTodo" />
+    </md-field>
+    <md-list v-if="todos.length">
       <TodoListItem v-for="todo in todos" :key="todo.id" :todo="todo" v-on:remove="removeTodo" />
-    </ol>
+    </md-list>
     <p v-else>Nothing left in the list. Add a new todo in the input above.</p>
   </div>
 </template>
