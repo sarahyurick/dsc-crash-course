@@ -278,6 +278,10 @@ Go into your index.js file and add:
 const express = require('express')
 // Initialize the app
 const app = express();
+// this is a hack so that we can access localhost:8080 from an outside source.
+// IRL you should try to restrict this to a specific domain.
+const cors = require('cors');
+app.use(cors());
 //Use to parse JSON request bodies
 app.use(express.json());
 //Parse URL-encoded bodies
@@ -361,11 +365,15 @@ Your index.js file should now look like:
 
 ```js
 // Import express
-const express = require('express')
+const express = require('express');
 //Import controller
-const controller = require("./controller")
+const controller = require('./controller');
 // Initialize the app
 const app = express();
+// this is a hack so that we can access localhost:8080 from an outside source.
+// IRL you should try to restrict this to a specific domain.
+const cors = require('cors');
+app.use(cors());
 //Use to parse JSON request bodies
 app.use(express.json());
 //Parse URL-encoded bodies
@@ -375,9 +383,7 @@ var port = process.env.PORT || 3000;
 //Route "/" endpoint to the controller
 app.use('/', controller);
 // Launch app to listen to specified port
-app.listen(port, function () {
-     console.log("Running dsc-crash-course on port " + port);
-});
+app.listen(port, () => console.log('Running dsc-crash-course on port ' + port));
 ```
 
 Now, if we run `node index` in the terminal again and return to our browser at `localhost:3000`, we should see the json that we defined in our controller: `{"status":"API is Working","message":"Welcome to the dsc-crash-course page"}`
