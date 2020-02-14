@@ -10,7 +10,13 @@
       </md-button>
     </span>
     <md-list v-if="todos.length">
-      <TodoListItem v-for="todo in todos" :key="todo.id" :todo="todo" v-on:remove="removeTodo" />
+      <TodoListItem
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        v-on:remove="removeTodo"
+        v-on:edit="editTodo"
+      />
     </md-list>
     <p v-else>Nothing left in the list. Add a new todo in the input above.</p>
   </div>
@@ -44,10 +50,31 @@ export default {
           this.todos = res.body;
         },
         err => {
-          console.err(err);
+          console.error(err);
           alert("Could not reach database");
         }
       );
+    },
+    editTodo(id) {
+      let item = this.todos.find(e => e.id === id);
+      const text = item.item;
+      if (text) {
+        this.$http
+          .put(`${API_BASE}/todolist`, {
+            id: id,
+            item: item
+          })
+          .then(
+            success => {
+              console.log(success);
+              this.refresh();
+            },
+            failure => {
+              console.error(failure);
+              alert("Failed to access database server");
+            }
+          );
+      }
     },
     addTodo() {
       // trim() will convert '  abcde  ' -> 'abcde'
@@ -67,7 +94,7 @@ export default {
               this.newTodoText = "";
             },
             failure => {
-              console.err(failure);
+              console.error(failure);
               alert("Update Failed");
             }
           );
