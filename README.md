@@ -444,7 +444,7 @@ router.post('/todolist',
     var taskId = req.body.taskId;
     var task = req.body.task;
     //Insertion query
-    const query = 'INSERT INTO todolist (id, item) VALUES(?)';
+    const query = 'INSERT INTO todolist (id, item) VALUES(?, ?)';
     //Insert new item into database
     db.run(query, [ taskId, task ], function(err, rows) {
         if (err) {
@@ -501,6 +501,7 @@ Now, create another request, this time changing the method to **POST** and use t
 
 ```json
 {
+	"taskId" : 1,
 	"item" : "Buy groceries"
 }
 ```
