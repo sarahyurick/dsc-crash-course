@@ -1,9 +1,14 @@
 <template>
   <div>
-    <md-field>
-      <label>New Task</label>
-      <md-input v-model="newTodoText" v-on:keydown.enter="addTodo" />
-    </md-field>
+    <span style="display: flex; flex-flow: row-wrap">
+      <md-field>
+        <label>New Task</label>
+        <md-input v-model="newTodoText" v-on:keydown.enter="addTodo" />
+      </md-field>
+      <md-button class="md-icon-button md-primary md-raised" v-on:click="addTodo">
+        <md-icon>send</md-icon>
+      </md-button>
+    </span>
     <md-list v-if="todos.length">
       <TodoListItem v-for="todo in todos" :key="todo.id" :todo="todo" v-on:remove="removeTodo" />
     </md-list>
