@@ -94,7 +94,7 @@ const app = express();
 //Use to parse JSON request bodies
 app.use(express.json());
 //Parse URL-encoded bodies
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended : true}));
 // Setup server port
 var port = process.env.PORT || 8080;
 // Send message for default URL
