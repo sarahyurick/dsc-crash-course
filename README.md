@@ -252,7 +252,7 @@ router.post('/todolist',
         }
         //Return the 201 (Created) status, and a JSON containing todolist
         res.status(200).json({
-            message: `Item added at row: ${this.changes}`,
+            message: 'Item added',
         });
     });
 });
@@ -278,7 +278,7 @@ router.delete('/todolist/:itemNumber',
         }
         //Return the 200 (OK) status, and a JSON containing todolist
         res.status(200).json({
-            message: `Item with item number ${this.changes} deleted`,
+            message: 'Item deleted',
         });
     });
 });
