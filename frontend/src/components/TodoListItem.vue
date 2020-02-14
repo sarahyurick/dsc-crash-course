@@ -1,6 +1,6 @@
 <template>
   <li>
-    {{ todo.text }}
+    {{ todo.item }}
     <button v-on:click="$emit('remove', todo.id)">X</button>
   </li>
 </template>
@@ -9,8 +9,8 @@
 export default {
   props: {
     todo: {
-      type: Object,
-      required: true
+      id: Number,
+      item: String
     }
   }
 };

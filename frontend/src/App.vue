@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Todo List Crash Course</h1>
+    <h1>Tasks</h1>
     <TodoList />
   </div>
 </template>
@@ -16,4 +16,10 @@ export default {
 </script>
 
 <style>
+#app {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
 </style>

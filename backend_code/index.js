@@ -4,6 +4,10 @@ const express = require('express');
 const controller = require('./controller');
 // Initialize the app
 const app = express();
+// this is a hack so that we can access localhost:8080 from an outside source.
+// IRL you should try to restrict this to a specific domain.
+const cors = require('cors');
+app.use(cors());
 //Use to parse JSON request bodies
 app.use(express.json());
 //Parse URL-encoded bodies
