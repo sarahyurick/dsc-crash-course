@@ -400,14 +400,16 @@ At the top of your `controller.js` file (after the router import) add the follow
 const sqlite3 = require('sqlite3').verbose();
 //Initialize database and open a connection
 //Define the db to be created in memory and error check
-let db = new sqlite3.Database(':memory:', function(err) {
-    if(err) {
-        return console.error(err.message);
+let db = new sqlite3.Database('./todo.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, function(res) {
+    if (res) {
+        return console.error(res.message);
     }
-    console.log('Connected to in memory SQlite database');
-    //Create our table
-    var initTablesQuery = 'CREATE TABLE todolist (id INT PRIMARY KEY NOT NULL, item CHAR(50))';
-    db.run(initTablesQuery);
+    console.log('Connected to todolist.db SQlite database');
+    db.run('SELECT * FROM todolist', (res, err) => {
+        if (res !== null) {
+            db.run('CREATE TABLE todolist (id INTEGER PRIMARY KEY AUTOINCREMENT, item CHAR(50))');
+        }
+    });
 });
 ```
 
